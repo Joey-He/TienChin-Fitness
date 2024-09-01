@@ -127,7 +127,7 @@ public class SecurityConfig {
 
     /**
      * 强散列哈希加密实现
-     **/
+     */
     @Bean
     public BCryptPasswordEncoder bCryptPasswordEncoder() {
         return new BCryptPasswordEncoder();
