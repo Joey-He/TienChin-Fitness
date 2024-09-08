@@ -105,17 +105,19 @@ public class LogAspect {
                 operLog.setStatus(BusinessStatus.FAIL.ordinal());
                 operLog.setErrorMsg(StringUtils.substring(e.getMessage(), 0, 2000));
             }
+            // 通过连接点joinPoint获取类名和方法名
+//            String className = joinPoint.getTarget().getClass().getName();
+//            String methodName = joinPoint.getSignature().getName();
+            String methodName = joinPoint.getSignature().toLongString().split(" ")[2];
             // 设置方法名称
-            String className = joinPoint.getTarget().getClass().getName();
-            String methodName = joinPoint.getSignature().getName();
-            operLog.setMethod(className + "." + methodName + "()");
+            operLog.setMethod(methodName);
             // 设置请求方式
             operLog.setRequestMethod(ServletUtils.getRequest().getMethod());
             // 处理设置注解上的参数
             getControllerMethodDescription(joinPoint, controllerLog, operLog, jsonResult);
             // 设置消耗时间
             operLog.setCostTime(System.currentTimeMillis() - TIME_THREADLOCAL.get());
-            // 保存数据库
+            // 保存数据库，用异步操作，因为不能影响数据库的其它业务操作
             AsyncManager.me().execute(AsyncFactory.recordOper(operLog));
         } catch (Exception exp) {
             // 记录本地异常日志
@@ -162,9 +164,11 @@ public class LogAspect {
         String requestMethod = operLog.getRequestMethod();
         if (StringUtils.isEmpty(paramsMap)
                 && (HttpMethod.PUT.name().equals(requestMethod) || HttpMethod.POST.name().equals(requestMethod))) {
+            // 参数放在请求体的情况
             String params = argsArrayToString(joinPoint.getArgs(), excludeParamNames);
             operLog.setOperParam(StringUtils.substring(params, 0, 2000));
         } else {
+            // 参数放在地址栏的情况
             operLog.setOperParam(StringUtils.substring(JSON.toJSONString(paramsMap, excludePropertyPreFilter(excludeParamNames)), 0, 2000));
         }
     }

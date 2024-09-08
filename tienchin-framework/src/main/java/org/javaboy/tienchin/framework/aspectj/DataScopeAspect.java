@@ -136,6 +136,7 @@ public class DataScopeAspect {
         if (StringUtils.isNotBlank(sqlString.toString())) {
             Object params = joinPoint.getArgs()[0];
             if (StringUtils.isNotNull(params) && params instanceof BaseEntity) {
+                //将完成好的sql语句放在实体类 params的 dataScope属性中 这个属性是一个Map
                 BaseEntity baseEntity = (BaseEntity) params;
                 baseEntity.getParams().put(DATA_SCOPE, " AND (" + sqlString.substring(4) + ")");
             }

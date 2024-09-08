@@ -64,6 +64,7 @@ public class TokenService {
         String token = getToken(request);
         if (StringUtils.isNotEmpty(token)) {
             try {
+                //Jwt解密token
                 Claims claims = parseToken(token);
                 // 解析对应的权限以及用户信息
                 String uuid = (String) claims.get(Constants.LOGIN_USER_KEY);

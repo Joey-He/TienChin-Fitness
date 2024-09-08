@@ -25,7 +25,7 @@ import org.javaboy.tienchin.common.annotation.RepeatSubmit;
  */
 @Component
 public class SameUrlDataInterceptor extends RepeatSubmitInterceptor {
-    public final String REPEAT_PARAMS = "repeatParams";
+    public final String REPEAT_PARAMS = "repeat Params";
 
     public final String REPEAT_TIME = "repeatTime";
 
