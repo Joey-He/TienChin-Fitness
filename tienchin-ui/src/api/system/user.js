@@ -1,5 +1,5 @@
 import request from '@/utils/request'
-import { parseStrEmpty } from "@/utils/tienchin";
+import { parseStrEmpty } from "@/utils/ruoyi";
 
 // 查询用户列表
 export function listUser(query) {
@@ -105,7 +105,6 @@ export function uploadAvatar(data) {
   return request({
     url: '/system/user/profile/avatar',
     method: 'post',
-    headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
     data: data
   })
 }
@@ -124,13 +123,5 @@ export function updateAuthRole(data) {
     url: '/system/user/authRole',
     method: 'put',
     params: data
-  })
-}
-
-// 查询部门下拉树结构
-export function deptTreeSelect() {
-  return request({
-    url: '/system/user/deptTree',
-    method: 'get'
   })
 }

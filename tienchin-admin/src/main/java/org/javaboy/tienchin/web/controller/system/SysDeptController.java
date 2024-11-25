@@ -115,4 +115,11 @@ public class SysDeptController extends BaseController {
         deptService.checkDeptDataScope(deptId);
         return toAjax(deptService.deleteDeptById(deptId));
     }
+
+    @GetMapping("/treeselect")
+    public AjaxResult treeselect(SysDept dept)
+    {
+        List<SysDept> depts = deptService.selectDeptList(dept);
+        return AjaxResult.success(deptService.buildDeptTreeSelect(depts));
+    }
 }

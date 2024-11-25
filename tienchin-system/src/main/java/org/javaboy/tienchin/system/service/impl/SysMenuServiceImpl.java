@@ -157,11 +157,11 @@ public class SysMenuServiceImpl implements ISysMenuService {
             router.setQuery(menu.getQuery());
             router.setMeta(new MetaVo(menu.getMenuName(), menu.getIcon(), StringUtils.equals("1", menu.getIsCache()), menu.getPath()));
             List<SysMenu> cMenus = menu.getChildren();
-            if (StringUtils.isNotEmpty(cMenus) && UserConstants.TYPE_DIR.equals(menu.getMenuType())) {
+            if (StringUtils.isNotEmpty(cMenus) && UserConstants.TYPE_DIR.equals(menu.getMenuType())) { //第一个if是有children的M类型
                 router.setAlwaysShow(true);
                 router.setRedirect("noRedirect");
                 router.setChildren(buildMenus(cMenus));
-            } else if (isMenuFrame(menu)) {
+            } else if (isMenuFrame(menu)) {  //第二个if要求是C类型的，且为一级目录。
                 router.setMeta(null);
                 List<RouterVo> childrenList = new ArrayList<RouterVo>();
                 RouterVo children = new RouterVo();
@@ -172,7 +172,7 @@ public class SysMenuServiceImpl implements ISysMenuService {
                 children.setQuery(menu.getQuery());
                 childrenList.add(children);
                 router.setChildren(childrenList);
-            } else if (menu.getParentId().intValue() == 0 && isInnerLink(menu)) {
+            } else if (menu.getParentId().intValue() == 0 && isInnerLink(menu)) { //第三个if要求是一个内链
                 router.setMeta(new MetaVo(menu.getMenuName(), menu.getIcon()));
                 router.setPath("/");
                 List<RouterVo> childrenList = new ArrayList<RouterVo>();
@@ -317,7 +317,7 @@ public class SysMenuServiceImpl implements ISysMenuService {
      * @return 路由名称
      */
     public String getRouteName(SysMenu menu) {
-        // 非外链并且是一级目录（类型为目录）
+        // 非外链并且是一级目录（类型为菜单）
         if (isMenuFrame(menu)) {
             return StringUtils.EMPTY;
         }
@@ -354,6 +354,7 @@ public class SysMenuServiceImpl implements ISysMenuService {
             routerPath = "/" + menu.getPath();
         }
         // 非外链并且是一级目录（类型为菜单）
+
         else if (isMenuFrame(menu)) {
             routerPath = "/";
         }

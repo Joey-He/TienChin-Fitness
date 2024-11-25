@@ -1,29 +1,24 @@
 <template>
   <section class="app-main">
-    <transition name="fade-transform" mode="out-in">
-      <keep-alive :include="cachedViews">
-        <router-view v-if="!$route.meta.link" :key="key" />
-      </keep-alive>
-    </transition>
-    <iframe-toggle />
+    <router-view v-slot="{ Component, route }">
+      <transition name="fade-transform" mode="out-in">
+        <keep-alive :include="cachedViews">
+          <component :is="Component" :key="route.path"/>
+        </keep-alive>
+      </transition>
+    </router-view>
   </section>
 </template>
 
-<script>
-import iframeToggle from "./IframeToggle/index"
+<script setup>
+import useTagsViewStore from '@/store/modules/tagsView'
 
-export default {
-  name: 'AppMain',
-  components: { iframeToggle },
-  computed: {
-    cachedViews() {
-      return this.$store.state.tagsView.cachedViews
-    },
-    key() {
-      return this.$route.path
-    }
-  }
-}
+const tagsViewStore = useTagsViewStore()
+const route = useRoute()
+tagsViewStore.addCachedView(route)
+const cachedViews = computed(() => {
+    return tagsViewStore.cachedViews
+})
 </script>
 
 <style lang="scss" scoped>
@@ -55,21 +50,7 @@ export default {
 // fix css style bug in open el-dialog
 .el-popup-parent--hidden {
   .fixed-header {
-    padding-right: 6px;
+    padding-right: 17px;
   }
-}
-
-::-webkit-scrollbar {
-  width: 6px;
-  height: 6px;
-}
-
-::-webkit-scrollbar-track {
-  background-color: #f1f1f1;
-}
-
-::-webkit-scrollbar-thumb {
-  background-color: #c0c0c0;
-  border-radius: 3px;
 }
 </style>

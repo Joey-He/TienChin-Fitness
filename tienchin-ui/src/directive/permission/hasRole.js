@@ -1,15 +1,15 @@
  /**
  * v-hasRole 角色权限处理
- * Copyright (c) 2019 tienchin
+ * Copyright (c) 2019 ruoyi
  */
-
-import store from '@/store'
+ 
+import useUserStore from '@/store/modules/user'
 
 export default {
-  inserted(el, binding, vnode) {
+  mounted(el, binding, vnode) {
     const { value } = binding
     const super_admin = "admin";
-    const roles = store.getters && store.getters.roles
+    const roles = useUserStore().roles
 
     if (value && value instanceof Array && value.length > 0) {
       const roleFlag = value
