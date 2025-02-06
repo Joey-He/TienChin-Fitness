@@ -3,6 +3,7 @@ package org.javaboy.tienchin.system.mapper;
 import java.util.List;
 
 import org.apache.ibatis.annotations.Param;
+import org.javaboy.tienchin.common.core.domain.AjaxResult;
 import org.javaboy.tienchin.common.core.domain.entity.SysUser;
 
 /**
@@ -124,4 +125,6 @@ public interface SysUserMapper {
      * @return 结果
      */
     public SysUser checkEmailUnique(String email);
+
+    List<SysUser> getUsersByDeptId(long deptId);
 }

@@ -31,6 +31,9 @@
         <poi.version>4.1.2</poi.version>
         <velocity.version>2.3</velocity.version>
         <jwt.version>0.9.1</jwt.version>
+        <mybatis-plus.version>3.5.2</mybatis-plus.version>
+        <spring-boot.version>2.5.15</spring-boot.version>
+        <mybatis-plus-generator.version>3.5.3</mybatis-plus-generator.version>
     </properties>
 
     <!-- 依赖声明 -->
@@ -59,7 +62,7 @@
             <dependency>
                 <groupId>org.springframework.boot</groupId>
                 <artifactId>spring-boot-dependencies</artifactId>
-                <version>2.5.15</version>
+                <version>${spring-boot.version}</version>
                 <type>pom</type>
                 <scope>import</scope>
             </dependency>
@@ -69,6 +72,20 @@
                 <groupId>com.alibaba</groupId>
                 <artifactId>druid-spring-boot-starter</artifactId>
                 <version>${druid.version}</version>
+            </dependency>
+
+            <!-- mybatis-plus-->
+            <dependency>
+                <groupId>com.baomidou</groupId>
+                <artifactId>mybatis-plus-boot-starter</artifactId>
+                <version>${mybatis-plus.version}</version>
+            </dependency>
+
+            <!-- mybatis-plus 代码生成器 -->
+            <dependency>
+                <groupId>com.baomidou</groupId>
+                <artifactId>mybatis-plus-generator</artifactId>
+                <version>${mybatis-plus-generator.version}</version>
             </dependency>
 
             <!-- 解析客户端操作系统、浏览器等 -->
@@ -182,6 +199,34 @@
                 <version>${tienchin.version}</version>
             </dependency>
 
+            <!-- 渠道管理-->
+            <dependency>
+                <groupId>org.javaboy</groupId>
+                <artifactId>tienchin-channel</artifactId>
+                <version>${tienchin.version}</version>
+            </dependency>
+
+            <!-- 活动管理-->
+            <dependency>
+                <groupId>org.javaboy</groupId>
+                <artifactId>tienchin-activity</artifactId>
+                <version>${tienchin.version}</version>
+            </dependency>
+
+            <!-- 课程管理-->
+            <dependency>
+                <groupId>org.javaboy</groupId>
+                <artifactId>tienchin-course</artifactId>
+                <version>${tienchin.version}</version>
+            </dependency>
+
+            <!-- 线索管理-->
+            <dependency>
+                <groupId>org.javaboy</groupId>
+                <artifactId>tienchin-clue</artifactId>
+                <version>${tienchin.version}</version>
+            </dependency>
+
         </dependencies>
     </dependencyManagement>
 
@@ -192,6 +237,10 @@
         <module>tienchin-quartz</module>
         <module>tienchin-generator</module>
         <module>tienchin-common</module>
+        <module>tienchin-channel</module>
+        <module>tienchin-activity</module>
+        <module>tienchin-course</module>
+        <module>tienchin-clue</module>
     </modules>
     <packaging>pom</packaging>
 

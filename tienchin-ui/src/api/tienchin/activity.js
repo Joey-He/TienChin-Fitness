@@ -17,7 +17,7 @@ export function listChannel() {
     })
 }
 
-// 查询角色详细
+// 查询活动详细
 export function getActivity(activityId) {
     return request({
         url: '/tienchin/activity/' + activityId,
@@ -25,7 +25,7 @@ export function getActivity(activityId) {
     })
 }
 
-// 新增角色
+// 新增活动
 export function addActivity(data) {
     return request({
         url: '/tienchin/activity',
@@ -34,7 +34,7 @@ export function addActivity(data) {
     })
 }
 
-// 修改角色
+// 修改活动
 export function updateActivity(data) {
     return request({
         url: '/tienchin/activity',
@@ -43,7 +43,7 @@ export function updateActivity(data) {
     })
 }
 
-// 删除角色
+// 删除活动
 export function delActivity(activityIds) {
     return request({
         url: '/tienchin/activity/' + activityIds,

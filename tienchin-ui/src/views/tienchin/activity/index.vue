@@ -350,7 +350,7 @@
     function handleAdd() {
         reset();
         //加载渠道列表
-        // handleChannelList();
+        handleChannelList();
         open.value = true;
         title.value = "添加活动";
     }
@@ -359,10 +359,10 @@
     function handleUpdate(row) {
         reset();
         //加载渠道列表
-        // handleChannelList();
+        handleChannelList();
         const activityId = row.activityId || ids.value;
         getActivity(activityId).then(response => {
-            form.value = response.data;
+            form.value = response.data;  //将根据activityId查询到的活动对象数据赋值给form
             form.value.activityTime = new Array();
             form.value.activityTime.push(form.value.beginTime);
             form.value.activityTime.push(form.value.endTime);
@@ -375,18 +375,20 @@
     function submitForm() {
         proxy.$refs["activityRef"].validate(valid => {
             if (valid) {
+              //修改提交按钮
                 if (form.value.activityId != undefined) {
                     form.value.beginTime = form.value.activityTime[0];
                     form.value.endTime = form.value.activityTime[1];
                     //删除掉 form 中的 updateTime 字段
-                    delete form.value.updateTime
-                    delete form.value.createTime
+                    // delete form.value.updateTime
+                    // delete form.value.createTime
                     updateActivity(form.value).then(response => {
                         proxy.$modal.msgSuccess("修改成功");
                         open.value = false;
                         getList();
                     });
                 } else {
+                  //新增提交按钮
                     form.value.beginTime = form.value.activityTime[0];
                     form.value.endTime = form.value.activityTime[1];
                     addActivity(form.value).then(response => {

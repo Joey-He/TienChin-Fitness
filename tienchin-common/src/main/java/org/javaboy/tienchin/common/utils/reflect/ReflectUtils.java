@@ -154,6 +154,8 @@ public class ReflectUtils {
                         args[i] = Convert.toDouble(args[i]);
                     } else if (cs[i] == Float.class) {
                         args[i] = Convert.toFloat(args[i]);
+                    }else if (cs[i] == Byte.class) {
+                        args[i] = Convert.toByte(args[i]);
                     } else if (cs[i] == Date.class) {
                         if (args[i] instanceof String) {
                             args[i] = DateUtils.parseDate(args[i]);

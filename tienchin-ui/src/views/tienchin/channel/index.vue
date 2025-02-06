@@ -239,9 +239,9 @@
 
     </div>
 </template>
-
+<!--现在直接在 script 节点中增加 setup 属性，然后，script 节点就像以前 jquery 写法一样，setup节点中定义的变量名、方法名等等、默认都会自动返回、我们只需要定义即可。-->
 <script setup name="Channel">
-    import {getToken} from "../../../utils/auth";
+    import {getToken} from "@/utils/auth";
     import {listChannel,addChannel,getChannel,updateChannel,delChannel} from "../../../api/tienchin/channel";
 
     const router = useRouter();
@@ -290,7 +290,9 @@
         // 上传的地址
         url: import.meta.env.VITE_APP_BASE_API + "/tienchin/channel/importData"
     });
-
+    //假设我们在定义的时候，定义的是data对象，但我们访问的时候，
+    //却希望能够直接按照属性来访问，此时可直接展开变量，但是，如果直接通过三个点去展开变量，
+    //会导致变量的响应式特点失效，我们可以通过toRefs函数，让变量恢复响应式的特点
     const {queryParams, form, rules} = toRefs(data);
 
     /** 查询渠道列表 */

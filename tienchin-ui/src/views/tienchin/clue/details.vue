@@ -330,6 +330,7 @@ function goBack() {
  * 跳转到这个页面的请求格式是 /clue/details/index/10/view
  */
 onMounted(() => {
+  // 把请求格式路径的10提取出来了
   const clueId = proxy.$route.params && proxy.$route.params.clueId;
   type.value = proxy.$route.params && proxy.$route.params.type;
   isFiledDisabledEdit.value = type.value == 'view';

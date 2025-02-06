@@ -15,7 +15,7 @@ export function getClueSummaryById(clueId) {
         method: 'get'
     })
 }
-// 查询渠道列表
+// 查询线索细节
 export function getClueById(clueId) {
     return request({
         url: '/tienchin/clue/'+clueId,
