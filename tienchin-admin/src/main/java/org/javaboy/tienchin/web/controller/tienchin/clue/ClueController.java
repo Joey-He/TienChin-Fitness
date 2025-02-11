@@ -1,28 +1,28 @@
 package org.javaboy.tienchin.web.controller.tienchin.clue;
 
-import org.aspectj.weaver.loadtime.Aj;
+
 import org.javaboy.tienchin.activity.service.IActivityService;
 import org.javaboy.tienchin.channel.service.IChannelService;
 import org.javaboy.tienchin.clue.domain.Clue;
 import org.javaboy.tienchin.clue.domain.vo.ClueDetails;
 import org.javaboy.tienchin.clue.domain.vo.ClueSummary;
+import org.javaboy.tienchin.clue.domain.vo.ClueVO;
 import org.javaboy.tienchin.clue.service.IClueService;
 import org.javaboy.tienchin.common.annotation.Log;
 import org.javaboy.tienchin.common.core.controller.BaseController;
 import org.javaboy.tienchin.common.core.domain.AjaxResult;
-import org.javaboy.tienchin.common.core.domain.entity.SysDept;
-import org.javaboy.tienchin.common.core.domain.entity.SysUser;
 import org.javaboy.tienchin.common.core.page.TableDataInfo;
 import org.javaboy.tienchin.common.enums.BusinessType;
-import org.javaboy.tienchin.course.domain.Course;
-import org.javaboy.tienchin.course.domain.vo.CourseVO;
+import org.javaboy.tienchin.common.utils.poi.ExcelUtil;
+import org.javaboy.tienchin.common.validator.CreateGroup;
+import org.javaboy.tienchin.common.validator.EditGroup;
 import org.javaboy.tienchin.system.service.ISysUserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.stereotype.Controller;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
+import javax.servlet.http.HttpServletResponse;
 import java.util.List;
 
 /**
@@ -55,10 +55,31 @@ public class ClueController extends BaseController {
     @PreAuthorize("hasPermission('tienchin:clue:create')")
     @Log(title = "线索管理", businessType = BusinessType.INSERT)
     @PostMapping
-    public AjaxResult add(@Validated @RequestBody Clue clue) {
+    public AjaxResult add(@Validated(CreateGroup.class) @RequestBody Clue clue) {
         return clueService.addclue(clue);
     }
 
+    /**
+     * 根据clueId查询线索
+     * @param clueId
+     * @return
+     */
+    @PreAuthorize("hasPermission('tienchin:clue:edit')")
+    @Log(title = "线索管理", businessType = BusinessType.INSERT)
+    @GetMapping("/summary/{clueId}")
+    public AjaxResult getClueSummary(@PathVariable Integer clueId) {
+        return clueService.getClueSummary(clueId);
+    }
+
+    /**
+     * 修改线索
+     * @return
+     */
+    @PreAuthorize("hasPermission('tienchin:clue:edit')")
+    @PutMapping
+    public AjaxResult updateClue(@Validated(EditGroup.class)@RequestBody Clue clue){
+        return clueService.updateClue(clue);
+    }
     /**
      * 查询所有的渠道
      * @return
@@ -69,7 +90,11 @@ public class ClueController extends BaseController {
         return AjaxResult.success(channelService.list());
     }
 
-
+    /**
+     * 根据渠道id查询活动信息
+     * @param channelId
+     * @return
+     */
     @PreAuthorize("hasPermission('tienchin:clue:create')")
     @GetMapping("/activity/{channelId}")
     public AjaxResult getActivityByChannelId(@PathVariable Integer channelId){
@@ -83,9 +108,9 @@ public class ClueController extends BaseController {
      */
     @PreAuthorize("hasPermission('tienchin:clue:list')")
     @GetMapping("/list")
-    public TableDataInfo list() {
+    public TableDataInfo list(ClueVO clueVO) {
         startPage();
-        List<ClueSummary> list = clueService.selectClueList();
+        List<ClueSummary> list = clueService.selectClueList(clueVO);
         return getDataTable(list);
     }
 
@@ -121,4 +146,41 @@ public class ClueController extends BaseController {
     public AjaxResult clueFollow(@RequestBody ClueDetails clueDetails){
         return clueService.clueFollow(clueDetails);
     }
+
+    @PreAuthorize("hasPermission('tienchin:clue:follow')")
+    @PostMapping("/invalid")
+    public AjaxResult InvalidclueFollow(@RequestBody ClueDetails clueDetails){
+        return clueService.InvalidclueFollow(clueDetails);
+    }
+
+    /**
+     * 删除线索
+     * @param clueIds
+     * @return
+     */
+    @PreAuthorize("hasPermission('tienchin:clue:remove')")
+    @DeleteMapping("/{clueIds}")
+    public AjaxResult deleteByClueId(@PathVariable Integer[] clueIds){
+        return clueService.deleteByClueId(clueIds);
+    }
+
+    @Log(title = "线索管理", businessType = BusinessType.EXPORT)
+    @PreAuthorize("hasPermission('tienchin:clue:export')")
+    @PostMapping("/export")
+    public void export(HttpServletResponse response, ClueVO clueVO) {
+        List<ClueSummary> list = clueService.selectClueList(clueVO);
+        ExcelUtil<ClueSummary> util = new ExcelUtil<ClueSummary>(ClueSummary.class);
+        util.exportExcel(response, list, "线索数据");
+    }
+
+    /**
+     * 线索转为商机
+     * @param clueId
+     * @return
+     */
+    @PreAuthorize("hasPermission('tienchin:clue:follow')")
+    @PostMapping("/to_business/{clueId}")
+     public AjaxResult clue2Business(@PathVariable Integer clueId){
+        return clueService.clue2Business(clueId);
+     }
 }

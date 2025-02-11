@@ -4,8 +4,11 @@ import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
 import com.fasterxml.jackson.annotation.JsonFormat;
+import org.javaboy.tienchin.common.validator.CreateGroup;
+import org.javaboy.tienchin.common.validator.EditGroup;
 
 import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
 import java.io.Serializable;
 import java.time.LocalDateTime;
 
@@ -25,13 +28,14 @@ public class Clue implements Serializable {
     /**
      * 线索编号
      */
+    @NotNull(message = "clue.clueId.notnull" , groups = EditGroup.class)
     @TableId(value = "clue_id", type = IdType.AUTO)
     private Integer clueId;
 
     /**
      * 客户名字
      */
-    @NotBlank(message = "{clue.name.notblank}")
+    @NotBlank(message = "{clue.name.notblank}", groups = {EditGroup.class, CreateGroup.class})
     private String name;
 
     /**
@@ -67,7 +71,7 @@ public class Clue implements Serializable {
     /**
      * 客户电话
      */
-    @NotBlank(message = "{clue.phone.notblank}")
+    @NotBlank(message = "{clue.phone.notblank}", groups = {EditGroup.class, CreateGroup.class})
     private String phone;
 
     /**

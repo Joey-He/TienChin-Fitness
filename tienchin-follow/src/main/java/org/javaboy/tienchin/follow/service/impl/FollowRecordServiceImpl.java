@@ -1,9 +1,9 @@
-package org.javaboy.tienchin.clue.service.impl;
+package org.javaboy.tienchin.follow.service.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
-import org.javaboy.tienchin.clue.domain.FollowRecord;
-import org.javaboy.tienchin.clue.mapper.FollowRecordMapper;
-import org.javaboy.tienchin.clue.service.IFollowRecordService;
+import org.javaboy.tienchin.follow.domain.FollowRecord;
+import org.javaboy.tienchin.follow.mapper.FollowRecordMapper;
+import org.javaboy.tienchin.follow.service.IFollowRecordService;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import org.javaboy.tienchin.common.constant.TienChinConstants;
 import org.javaboy.tienchin.common.core.domain.AjaxResult;
@@ -24,6 +24,13 @@ public class FollowRecordServiceImpl extends ServiceImpl<FollowRecordMapper, Fol
     public AjaxResult getFollowRecordByClueId(Integer clueId) {
         QueryWrapper<FollowRecord> qw = new QueryWrapper<>();
         qw.lambda().eq(FollowRecord::getAssignId,clueId).eq(FollowRecord::getType, TienChinConstants.CLUE_TYPE).orderByDesc(FollowRecord::getCreateTime);
+        return AjaxResult.success(list(qw));
+    }
+
+    @Override
+    public AjaxResult getFollowRecordByBusinessId(Integer businessId) {
+        QueryWrapper<FollowRecord> qw = new QueryWrapper<>();
+        qw.lambda().eq(FollowRecord::getAssignId,businessId).eq(FollowRecord::getType,TienChinConstants.BUSINESS_TYPE).orderByDesc(FollowRecord::getCreateTime);
         return AjaxResult.success(list(qw));
     }
 }

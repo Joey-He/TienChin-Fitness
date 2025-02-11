@@ -3,6 +3,7 @@ package org.javaboy.tienchin.clue.domain.vo;
 import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.fasterxml.jackson.annotation.JsonFormat;
+import org.javaboy.tienchin.common.annotation.Excel;
 
 import javax.validation.constraints.NotBlank;
 import java.time.LocalDateTime;
@@ -16,31 +17,37 @@ public class ClueSummary {
     /**
      * 客户名字
      */
+    @Excel(name = "客户名称")
     private String name;
 
     /**
      * 渠道ID
      */
-
+    @Excel(name = "渠道名称")
     private String channelName;
 
     /**
      * 客户电话
      */
+    @Excel(name = "客户电话")
     private String phone;
 
 
     /**
      * 线索状态 1 已分配 2 跟进中 3 回收 4 伪线索
      */
+    @Excel(name = "线索状态", readConverterExp = "1=已分配,2=跟进中,3=回收,4=伪线索")
     private Integer status;
 
+    @Excel(name = "创建时间")
     private LocalDateTime createTime;
 
     private String createBy;
 
+    @Excel(name = "委派人")
     private String owner;
 
+    @Excel(name = "下次跟进时间")
     private LocalDateTime nextTime;
 
     public Integer getClueId() {

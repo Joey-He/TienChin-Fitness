@@ -1,11 +1,10 @@
-package org.javaboy.tienchin.web.controller.tienchin.clue;
+package org.javaboy.tienchin.web.controller.tienchin;
 
-import org.javaboy.tienchin.clue.service.IFollowRecordService;
+import org.javaboy.tienchin.follow.service.IFollowRecordService;
 import org.javaboy.tienchin.common.core.controller.BaseController;
 import org.javaboy.tienchin.common.core.domain.AjaxResult;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -20,15 +19,31 @@ import org.springframework.web.bind.annotation.RestController;
  * @since 2024-12-30
  */
 @RestController
-@RequestMapping("/tienchin/follow/record/clue")
+@RequestMapping("/tienchin/follow/record")
 public class FollowRecordController extends BaseController {
 
     @Autowired
     IFollowRecordService followRecordService;
 
+    /**
+     * 查询线索跟进记录
+     * @param clueId
+     * @return
+     */
     @PreAuthorize("hasAnyPermissions('tienchin:clue:veiw','tienchin:clue:follow')")
-    @GetMapping("/{clueId}")
+    @GetMapping("/clue/{clueId}")
     public AjaxResult getFollowRecordByClueId(@PathVariable Integer clueId){
         return followRecordService.getFollowRecordByClueId(clueId);
+    }
+
+    /**
+     * 查询商机跟进记录
+     * @param businessId
+     * @return
+     */
+    @PreAuthorize("hasAnyPermissions('tienchin:business:veiw','tienchin:business:follow')")
+    @GetMapping("/business/{businessId}")
+    public AjaxResult getFollowRecordByBusinessId(@PathVariable Integer businessId){
+        return followRecordService.getFollowRecordByBusinessId(businessId);
     }
 }

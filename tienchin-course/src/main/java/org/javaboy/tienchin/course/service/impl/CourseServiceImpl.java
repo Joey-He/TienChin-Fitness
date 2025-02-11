@@ -59,4 +59,16 @@ public class CourseServiceImpl extends ServiceImpl<CourseMapper, Course> impleme
         uw.lambda().set(Course::getDelFlag,1).in(Course::getCourseId,courseIds);
         return update(uw);
     }
+
+    /**
+     * 根据课程类型查询课程
+     * @param type
+     * @return
+     */
+    @Override
+    public AjaxResult getCourseByCourseId(Integer type) {
+        QueryWrapper<Course> qw = new QueryWrapper<>();
+        qw.lambda().eq(Course::getType,type);
+        return AjaxResult.success(list(qw));
+    }
 }
