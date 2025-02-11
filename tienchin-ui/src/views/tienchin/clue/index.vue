@@ -567,9 +567,9 @@ function handleDelete(row) {
 
 /** 导出按钮操作 */
 function handleExport() {
-  proxy.download("tienchin/course/export", {
+  proxy.download("tienchin/clue/export", {
     ...queryParams.value
-  }, `course_${new Date().getTime()}.xlsx`);
+  }, `clue_${new Date().getTime()}.xlsx`);
 }
 
 getList();
