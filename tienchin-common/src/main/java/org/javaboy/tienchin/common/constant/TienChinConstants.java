@@ -19,4 +19,9 @@ public interface TienChinConstants {
     String ADMIN_USERNAME = "admin";
     long ADMIN_ID = 1;
     long ADMIN_DEPT_ID = 103;
+
+    int CONTRACT_UNAPPROVE = 1;
+    int CONTRACT_APPROVED = 2;
+    int CONTRACT_REJECT = 3;
+    String CONTRACT_PROCESS_DEFINITION_ID = "tienchin_contract_approve";
 }

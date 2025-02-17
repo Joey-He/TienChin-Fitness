@@ -498,7 +498,7 @@ public class SysUserServiceImpl implements ISysUserService {
     }
 
     @Override
-    public AjaxResult getUsersByDeptId(long deptId) {
+    public AjaxResult getUsersByDeptId(Long deptId) {
         List<SysUser> user =  userMapper.getUsersByDeptId(deptId);
         return AjaxResult.success(user);
     }

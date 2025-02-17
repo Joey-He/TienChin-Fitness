@@ -28,7 +28,7 @@ public class Contract implements Serializable {
     /**
      * 客户手机号
      */
-    private String phnoe;
+    private String phone;
 
     /**
      * 客户姓名
@@ -117,6 +117,46 @@ public class Contract implements Serializable {
 
     private Integer delFlag;
 
+    private Integer approveDeptId;
+
+    private  String approveDeptName;
+
+    private Integer approveUserId;
+
+    private  String approveUserName;
+
+    public Integer getApproveDeptId() {
+        return approveDeptId;
+    }
+
+    public void setApproveDeptId(Integer approveDeptId) {
+        this.approveDeptId = approveDeptId;
+    }
+
+    public String getApproveDeptName() {
+        return approveDeptName;
+    }
+
+    public void setApproveDeptName(String approveDeptName) {
+        this.approveDeptName = approveDeptName;
+    }
+
+    public Integer getApproveUserId() {
+        return approveUserId;
+    }
+
+    public void setApproveUserId(Integer approveUserId) {
+        this.approveUserId = approveUserId;
+    }
+
+    public String getApproveUserName() {
+        return approveUserName;
+    }
+
+    public void setApproveUserName(String approveUserName) {
+        this.approveUserName = approveUserName;
+    }
+
     public Integer getContractId() {
         return contractId;
     }
@@ -125,12 +165,12 @@ public class Contract implements Serializable {
         this.contractId = contractId;
     }
 
-    public String getPhnoe() {
-        return phnoe;
+    public String getPhone() {
+        return phone;
     }
 
-    public void setPhnoe(String phnoe) {
-        this.phnoe = phnoe;
+    public void setPhone(String phone) {
+        this.phone = phone;
     }
 
     public String getName() {
@@ -304,29 +344,33 @@ public class Contract implements Serializable {
     @Override
     public String toString() {
         return "Contract{" +
-            "contractId = " + contractId +
-            ", phnoe = " + phnoe +
-            ", name = " + name +
-            ", type = " + type +
-            ", activityName = " + activityName +
-            ", activityId = " + activityId +
-            ", courseName = " + courseName +
-            ", courseId = " + courseId +
-            ", channelId = " + channelId +
-            ", channelName = " + channelName +
-            ", status = " + status +
-            ", filePath = " + filePath +
-            ", contractPrice = " + contractPrice +
-            ", coursePrice = " + coursePrice +
-            ", discountType = " + discountType +
-            ", processInstanceId = " + processInstanceId +
-            ", businessId = " + businessId +
-            ", createBy = " + createBy +
-            ", createTime = " + createTime +
-            ", updateBy = " + updateBy +
-            ", updateTime = " + updateTime +
-            ", remark = " + remark +
-            ", delFlag = " + delFlag +
-        "}";
+                "contractId=" + contractId +
+                ", phone='" + phone + '\'' +
+                ", name='" + name + '\'' +
+                ", type='" + type + '\'' +
+                ", activityName='" + activityName + '\'' +
+                ", activityId=" + activityId +
+                ", courseName='" + courseName + '\'' +
+                ", courseId=" + courseId +
+                ", channelId=" + channelId +
+                ", channelName='" + channelName + '\'' +
+                ", status=" + status +
+                ", filePath='" + filePath + '\'' +
+                ", contractPrice=" + contractPrice +
+                ", coursePrice=" + coursePrice +
+                ", discountType=" + discountType +
+                ", processInstanceId='" + processInstanceId + '\'' +
+                ", businessId=" + businessId +
+                ", createBy='" + createBy + '\'' +
+                ", createTime=" + createTime +
+                ", updateBy=" + updateBy +
+                ", updateTime=" + updateTime +
+                ", remark='" + remark + '\'' +
+                ", delFlag=" + delFlag +
+                ", approveDeptId=" + approveDeptId +
+                ", approveDeptName='" + approveDeptName + '\'' +
+                ", approveUserId=" + approveUserId +
+                ", approveUserName='" + approveUserName + '\'' +
+                '}';
+        }
     }
-}

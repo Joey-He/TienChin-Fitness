@@ -1,46 +1,46 @@
 <template>
   <div class="app-container">
-<!--    <el-form :model="queryParams" ref="queryRef" :inline="true" v-show="showSearch" label-width="80px">
-      <el-form-item label="客户姓名" prop="name">
-        <el-input
-            v-model="queryParams.name"
-            placeholder="请输入客户姓名"
-            clearable
-            @keyup.enter="handleQuery"
-        />
-      </el-form-item>
-      <el-form-item label="客户手机" prop="phone">
-        <el-input
-            v-model="queryParams.phone"
-            placeholder="请输入客户手机号码"
-            clearable
-            @keyup.enter="handleQuery"
-        />
-      </el-form-item>
-      <el-form-item label="归属人" prop="owner">
-        <el-input
-            v-model="queryParams.owner"
-            placeholder="请输入合同归属人"
-            clearable
-            @keyup.enter="handleQuery"
-        />
-      </el-form-item>
-      <el-form-item label="跟进时间">
-        <el-date-picker
-            v-model="queryParams.dateRange"
-            value-format="YYYY-MM-DD hh:mm:ss"
-            format="YYYY-MM-DD hh:mm:ss"
-            type="datetimerange"
-            range-separator="-"
-            start-placeholder="开始日期"
-            end-placeholder="结束日期"
-        ></el-date-picker>
-      </el-form-item>
-      <el-form-item>
-        <el-button type="primary" icon="Search" @click="handleQuery">搜索</el-button>
-        <el-button icon="Refresh" @click="resetQuery">重置</el-button>
-      </el-form-item>
-    </el-form>-->
+    <!--    <el-form :model="queryParams" ref="queryRef" :inline="true" v-show="showSearch" label-width="80px">
+          <el-form-item label="客户姓名" prop="name">
+            <el-input
+                v-model="queryParams.name"
+                placeholder="请输入客户姓名"
+                clearable
+                @keyup.enter="handleQuery"
+            />
+          </el-form-item>
+          <el-form-item label="客户手机" prop="phone">
+            <el-input
+                v-model="queryParams.phone"
+                placeholder="请输入客户手机号码"
+                clearable
+                @keyup.enter="handleQuery"
+            />
+          </el-form-item>
+          <el-form-item label="归属人" prop="owner">
+            <el-input
+                v-model="queryParams.owner"
+                placeholder="请输入合同归属人"
+                clearable
+                @keyup.enter="handleQuery"
+            />
+          </el-form-item>
+          <el-form-item label="跟进时间">
+            <el-date-picker
+                v-model="queryParams.dateRange"
+                value-format="YYYY-MM-DD hh:mm:ss"
+                format="YYYY-MM-DD hh:mm:ss"
+                type="datetimerange"
+                range-separator="-"
+                start-placeholder="开始日期"
+                end-placeholder="结束日期"
+            ></el-date-picker>
+          </el-form-item>
+          <el-form-item>
+            <el-button type="primary" icon="Search" @click="handleQuery">搜索</el-button>
+            <el-button icon="Refresh" @click="resetQuery">重置</el-button>
+          </el-form-item>
+        </el-form>-->
 
     <el-row :gutter="10" class="mb8">
       <el-col :span="1.5">

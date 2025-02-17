@@ -2,4 +2,11 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="org.javaboy.tienchin.contract.mapper.ContractMapper">
 
+    <select id="getConctractInfoByPhone" resultType="org.javaboy.tienchin.contract.domain.vo.ContractInfo">
+        SELECT tb.`name`,tb.channel_id,tch.channel_name,tb.activity_id,ta.`name` as activity_name,tb.course_id,tc.`name` as course_name,tc.type,ta.type as discount_type
+        FROM tienchin_business tb LEFT JOIN tienchin_course tc on tb.course_id = tc.course_id
+        LEFT JOIN tienchin_channel  tch on tb.channel_id=tch.channel_id
+        LEFT JOIN tienchin_activity ta on tb.activity_id = ta.activity_id
+        WHERE tb.phone = #{phone} ORDER BY tb.create_time DESC;
+    </select>
 </mapper>
