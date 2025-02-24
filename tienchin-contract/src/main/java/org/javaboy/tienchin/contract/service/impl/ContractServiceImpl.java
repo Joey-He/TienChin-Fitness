@@ -1,33 +1,50 @@
 package org.javaboy.tienchin.contract.service.impl;
 
+import com.aspose.words.Document;
+import com.aspose.words.PdfCompliance;
+import com.aspose.words.PdfSaveOptions;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.baomidou.mybatisplus.core.conditions.update.UpdateWrapper;
+import org.flowable.common.engine.impl.identity.Authentication;
+import org.flowable.engine.HistoryService;
+import org.flowable.engine.RuntimeService;
+import org.flowable.engine.TaskService;
+import org.flowable.engine.history.HistoricProcessInstance;
+import org.flowable.engine.runtime.Execution;
+import org.flowable.engine.runtime.ProcessInstance;
+import org.flowable.task.api.Task;
+import org.flowable.task.api.TaskQuery;
+import org.flowable.variable.api.history.HistoricVariableInstance;
 import org.javaboy.tienchin.business.domain.Business;
 import org.javaboy.tienchin.business.service.IBusinessService;
 import org.javaboy.tienchin.common.constant.TienChinConstants;
 import org.javaboy.tienchin.common.core.domain.AjaxResult;
 import org.javaboy.tienchin.common.core.domain.UploadFileResp;
 import org.javaboy.tienchin.common.utils.SecurityUtils;
+import org.javaboy.tienchin.common.utils.sign.Base64;
 import org.javaboy.tienchin.contract.domain.Contract;
+import org.javaboy.tienchin.contract.domain.vo.ContractApproveInfo;
 import org.javaboy.tienchin.contract.domain.vo.ContractInfo;
+import org.javaboy.tienchin.contract.domain.vo.ContractSummary;
 import org.javaboy.tienchin.contract.mapper.ContractMapper;
 import org.javaboy.tienchin.contract.service.IContractService;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import org.javaboy.tienchin.course.domain.Course;
 import org.javaboy.tienchin.course.service.ICourseService;
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
+import javax.servlet.ServletOutputStream;
 import javax.servlet.http.HttpServletRequest;
-import java.io.File;
-import java.io.IOException;
+import javax.servlet.http.HttpServletResponse;
+import java.io.*;
 import java.text.SimpleDateFormat;
 import java.time.LocalDateTime;
-import java.util.Date;
-import java.util.List;
-import java.util.UUID;
+import java.util.*;
 
 /**
  * <p>
@@ -50,6 +67,15 @@ public class ContractServiceImpl extends ServiceImpl<ContractMapper, Contract> i
 
     @Autowired
     ContractMapper contractMapper;
+
+    @Autowired
+    RuntimeService runtimeService;
+
+    @Autowired
+    TaskService taskService;
+
+    @Autowired
+    HistoryService historyService;
 
     @Value("${tienchin.contract.file}")
     String contractFolder;
@@ -135,8 +161,21 @@ public class ContractServiceImpl extends ServiceImpl<ContractMapper, Contract> i
         contract.setDelFlag(0);
         contract.setStatus(TienChinConstants.CONTRACT_UNAPPROVE);
         save(contract);
-        //2。 启动流程
         //2. 启动流程
+        //2.1 启动流程
+        HashMap<String, Object> pivars = new HashMap<>();
+        pivars.put("currentUser",SecurityUtils.getUsername());
+        ProcessInstance processInstance = runtimeService.startProcessInstanceByKey(TienChinConstants.CONTRACT_PROCESS_DEFINITION_ID,pivars);
+        HashMap<String, Object> vars = new HashMap<>();
+        vars.put("contractId",contract.getContractId());
+        vars.put("approveUser",contract.getApproveUserName());
+        vars.put("approveUserId",contract.getApproveUserId());
+        //2.2 提交合同任务
+        Task task = taskService.createTaskQuery().taskAssignee(SecurityUtils.getUsername()).taskDefinitionKey("submitContractTask").singleResult();
+        taskService.complete(task.getId(),vars);
+        //2.3 跟新合同信息
+        contract.setProcessInstanceId(processInstance.getProcessInstanceId());
+        updateById(contract);
         return AjaxResult.success("提交成功");
     }
 
@@ -149,5 +188,169 @@ public class ContractServiceImpl extends ServiceImpl<ContractMapper, Contract> i
         }else {
             return AjaxResult.error("手机号码输入错误，客户不存在！");
         }
+    }
+
+    /**
+     * 查询待审批的任务
+     * @return
+     */
+    @Override
+    public List<ContractSummary> getAllUnapproveTask() {
+        List<ContractSummary> result = new ArrayList<>();
+        // 查询当前用户需要处理的任务
+        List<Task> list = taskService.createTaskQuery().taskAssignee(SecurityUtils.getUsername()).processDefinitionKey(TienChinConstants.CONTRACT_PROCESS_DEFINITION_ID)
+                .orderByTaskCreateTime().desc().active().list();
+        for (Task task : list) {
+            String taskId = task.getId();
+//            Integer contractId = (Integer) task.getProcessVariables().get("contractId");
+            Integer contractId = (Integer) taskService.getVariable(task.getId(), "contractId");
+            String reason = (String) taskService.getVariable(task.getId(), "reason");
+            Contract contract = getById(contractId);
+            ContractSummary contractSummary = new ContractSummary();
+            BeanUtils.copyProperties(contract,contractSummary);
+            contractSummary.setTaskId(taskId);
+            contractSummary.setReason(reason);
+            result.add(contractSummary);
+        }
+        return result;
+    }
+
+    /**
+     * 根据contractId获取contract信息
+     * @param contractId
+     * @return
+     */
+    @Override
+    public AjaxResult getContractById(Integer contractId) {
+        Contract contract = getById(contractId);
+        return AjaxResult.success(contract);
+    }
+
+    /**
+     * 预览合同文件
+     * @param year
+     * @param month
+     * @param day
+     * @param name
+     * @return
+     */
+    @Override
+    public AjaxResult showContractPDF(String year, String month, String day, String name) {
+        // word的文件路径
+        try {
+            String docFilePath = contractFolder + File.separator + year + File.separator + month + File.separator + day + File.separator +name;
+            String pdfFilePath = docFilePath.replace(".docx",".pdf").replace(".doc",".pdf");
+            File pdfFile = new File(pdfFilePath);
+            if(!pdfFile.exists()){
+                Document document = new Document(docFilePath);
+                PdfSaveOptions options = new PdfSaveOptions();
+                options.setCompliance(PdfCompliance.PDF_17);
+                document.save(pdfFilePath,options);
+            }
+            FileInputStream fis = new FileInputStream(pdfFile);
+            int len = 0;
+            byte[] buf = new byte[1024];
+            ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+            while((len = fis.read(buf)) != -1){
+                    outputStream.write(buf,0,len);
+                }
+            return AjaxResult.success(Base64.encode(outputStream.toByteArray()));
+        } catch (Exception e) {
+            return AjaxResult.error("未加载到pdf文件");
+        }
+    }
+
+    @Override
+    public List<ContractSummary> getCommittedTask() {
+        List<ContractSummary> result = new ArrayList<>();
+        // 查询当前用户需要处理的任务
+//        List<Task> list = taskService.createTaskQuery().taskAssignee(SecurityUtils.getUsername()).processDefinitionKey(TienChinConstants.CONTRACT_PROCESS_DEFINITION_ID)
+//                .orderByTaskCreateTime().desc().active().list();
+        List<Execution> executions = runtimeService.createExecutionQuery().variableValueEquals("currentUser", SecurityUtils.getUsername()).processDefinitionKey(TienChinConstants.CONTRACT_PROCESS_DEFINITION_ID).list();
+        for (Execution e : executions) {
+            String eId = e.getId();
+//            Integer contractId = (Integer) task.getProcessVariables().get("contractId");
+            Integer contractId = (Integer) runtimeService.getVariable(eId, "contractId");
+            String reason = (String) runtimeService.getVariable(e.getId(), "reason");
+            Contract contract = getById(contractId);
+            ContractSummary contractSummary = new ContractSummary();
+            BeanUtils.copyProperties(contract,contractSummary);
+            contractSummary.setTaskId(eId);
+            contractSummary.setReason(reason);
+            result.add(contractSummary);
+        }
+        return result;
+    }
+
+    /**
+     * 合同审批
+     * @param contractApproveInfo
+     * @return
+     */
+    @Override
+    public AjaxResult approveOrReject(ContractApproveInfo contractApproveInfo) {
+        HashMap<String, Object> vars = new HashMap<>();
+        vars.put("approve",contractApproveInfo.getApprove());
+        vars.put("reason",contractApproveInfo.getReason());
+        taskService.complete(contractApproveInfo.getTaskId(),vars);
+        UpdateWrapper<Contract> uw = new UpdateWrapper<>();
+        if(contractApproveInfo.getApprove()){
+            uw.lambda().set(Contract::getStatus,TienChinConstants.CONTRACT_APPROVED).eq(Contract::getContractId,contractApproveInfo.getContractId());
+        }else {
+            uw.lambda().set(Contract::getStatus,TienChinConstants.CONTRACT_REJECT).eq(Contract::getContractId,contractApproveInfo.getContractId());
+        }
+        update(uw);
+        return AjaxResult.success("审批完成");
+    }
+
+    @Override
+    public List<ContractSummary> getApprovedTask() {
+        List<HistoricProcessInstance> list = historyService.createHistoricProcessInstanceQuery().variableValueEquals("currentUser", SecurityUtils.getUsername()).finished().list();
+        ArrayList<ContractSummary> result = new ArrayList<>();
+        for (HistoricProcessInstance hpi : list) {
+            List<HistoricVariableInstance> varList = historyService.createHistoricVariableInstanceQuery().processInstanceId(hpi.getId()).list();
+            Integer contractId = null;
+            String reason = null;
+            for (HistoricVariableInstance hvi : varList) {
+                if("contractId".equals(hvi.getVariableName())){
+                    contractId = (Integer) hvi.getValue();
+                }else if("reason".equals((hvi.getVariableName()))){
+                    reason  = (String) hvi.getValue();
+                }
+            }
+            Contract contract = getById(contractId);
+            ContractSummary contractSummary = new ContractSummary();
+            BeanUtils.copyProperties(contract,contractSummary);
+            contractSummary.setReason(reason);
+            result.add(contractSummary);
+        }
+        return result;
+    }
+
+    /**
+     * 修改合同信息
+     * @param contract
+     * @return
+     */
+    @Override
+    public AjaxResult updateContract(Contract contract) {
+        //1.3 设置通用属性
+        contract.setUpdateBy(SecurityUtils.getUsername());
+        contract.setUpdateTime(LocalDateTime.now());
+        contract.setStatus(TienChinConstants.CONTRACT_UNAPPROVE);
+        updateById(contract);
+        //2. 启动流程
+        //2.1 启动流程
+
+        HashMap<String, Object> vars = new HashMap<>();
+        vars.put("currentUser",SecurityUtils.getUsername());
+        vars.put("contractId",contract.getContractId());
+        vars.put("approveUser",contract.getApproveUserName());
+        vars.put("approveUserId",contract.getApproveUserId());
+
+        Task task = taskService.createTaskQuery().processInstanceId(contract.getProcessInstanceId()).active().singleResult();
+        taskService.complete(task.getId(),vars);
+
+        return AjaxResult.success("提交成功");
     }
 }

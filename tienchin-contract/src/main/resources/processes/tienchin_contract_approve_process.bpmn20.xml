@@ -3,25 +3,25 @@
   <process id="tienchin_contract_approve" name="TienChin项目合同审批流程" isExecutable="true">
     <documentation>TienChin项目合同审批流程</documentation>
     <startEvent id="startEvent1" flowable:formFieldValidation="true"></startEvent>
-    <userTask id="sid-48F401F3-D7DA-4201-AD3D-B2BA3B1C701A" name="提交合同" flowable:assignee="$INITIATOR" flowable:formFieldValidation="true">
+    <userTask id="submitContractTask" name="提交合同" flowable:assignee="${currentUser}" flowable:formFieldValidation="true">
       <extensionElements>
         <modeler:activiti-idm-initiator xmlns:modeler="http://flowable.org/modeler"><![CDATA[true]]></modeler:activiti-idm-initiator>
       </extensionElements>
     </userTask>
-    <sequenceFlow id="sid-8AD808A4-8577-4F37-9C1B-AF68DD90B472" sourceRef="startEvent1" targetRef="sid-48F401F3-D7DA-4201-AD3D-B2BA3B1C701A"></sequenceFlow>
+    <sequenceFlow id="sid-8AD808A4-8577-4F37-9C1B-AF68DD90B472" sourceRef="startEvent1" targetRef="submitContractTask"></sequenceFlow>
     <userTask id="sid-050CA60B-EE76-4114-8E29-6E6FDE6CC171" name="合同审批" flowable:assignee="${approveUser}" flowable:formFieldValidation="true">
       <extensionElements>
         <modeler:initiator-can-complete xmlns:modeler="http://flowable.org/modeler"><![CDATA[false]]></modeler:initiator-can-complete>
       </extensionElements>
     </userTask>
-    <sequenceFlow id="sid-E0CA8462-E48B-413B-969C-2D16FFE6D043" sourceRef="sid-48F401F3-D7DA-4201-AD3D-B2BA3B1C701A" targetRef="sid-050CA60B-EE76-4114-8E29-6E6FDE6CC171"></sequenceFlow>
+    <sequenceFlow id="sid-E0CA8462-E48B-413B-969C-2D16FFE6D043" sourceRef="submitContractTask" targetRef="sid-050CA60B-EE76-4114-8E29-6E6FDE6CC171"></sequenceFlow>
     <exclusiveGateway id="sid-2E6A01E6-4A55-4453-968C-539CF46A6F4C"></exclusiveGateway>
     <endEvent id="sid-5D6E0CD1-03DD-4320-9569-79C7D75EC8BC"></endEvent>
     <sequenceFlow id="sid-293209EB-1E4D-4891-AD3C-D2841F28256F" sourceRef="sid-050CA60B-EE76-4114-8E29-6E6FDE6CC171" targetRef="sid-2E6A01E6-4A55-4453-968C-539CF46A6F4C"></sequenceFlow>
     <sequenceFlow id="sid-6613EE30-A9FF-4F6C-B23E-5862CD95CA73" name="审批通过" sourceRef="sid-2E6A01E6-4A55-4453-968C-539CF46A6F4C" targetRef="sid-5D6E0CD1-03DD-4320-9569-79C7D75EC8BC">
       <conditionExpression xsi:type="tFormalExpression"><![CDATA[${approve}]]></conditionExpression>
     </sequenceFlow>
-    <sequenceFlow id="sid-B5CB70A1-B63F-4C44-8F5F-D1941573D42D" name="审批驳回" sourceRef="sid-2E6A01E6-4A55-4453-968C-539CF46A6F4C" targetRef="sid-48F401F3-D7DA-4201-AD3D-B2BA3B1C701A">
+    <sequenceFlow id="sid-B5CB70A1-B63F-4C44-8F5F-D1941573D42D" name="审批驳回" sourceRef="sid-2E6A01E6-4A55-4453-968C-539CF46A6F4C" targetRef="submitContractTask">
       <conditionExpression xsi:type="tFormalExpression"><![CDATA[${!approve}]]></conditionExpression>
     </sequenceFlow>
   </process>
@@ -30,7 +30,7 @@
       <bpmndi:BPMNShape bpmnElement="startEvent1" id="BPMNShape_startEvent1">
         <omgdc:Bounds height="30.0" width="30.0" x="150.00000439939086" y="163.0000047806714"></omgdc:Bounds>
       </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape bpmnElement="sid-48F401F3-D7DA-4201-AD3D-B2BA3B1C701A" id="BPMNShape_sid-48F401F3-D7DA-4201-AD3D-B2BA3B1C701A">
+      <bpmndi:BPMNShape bpmnElement="submitContractTask" id="BPMNShape_submitContractTask">
         <omgdc:Bounds height="80.0" width="100.0" x="255.00000747896445" y="138.00000404743957"></omgdc:Bounds>
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape bpmnElement="sid-050CA60B-EE76-4114-8E29-6E6FDE6CC171" id="BPMNShape_sid-050CA60B-EE76-4114-8E29-6E6FDE6CC171">

@@ -52,4 +52,52 @@
                    LEFT JOIN tienchin_assignment tas on tc.clue_id = tas.assign_id and tas.latest=TRUE
         WHERE tc.clue_id=#{clueId} and tas.type=0
     </select>
+    <select id="increaseClue" resultType="org.javaboy.tienchin.common.core.domain.model.EchartsPoint">
+        SELECT t2.date_str as x, if(t3.c is null,0,t3.c) as y
+        FROM (
+        SELECT @sdate := date_add(date_format(#{params.beginTime},'%Y-%m-%d'), interval 1 day) AS date_str
+        UNION ALL
+        SELECT @sdate := date_add(@sdate, interval 1 day)
+        FROM mysql.time_zone
+        LIMIT 999
+        ) t2
+        LEFT JOIN (
+        SELECT DATE(create_time) AS date_str, COUNT(1) AS c  -- 给 COUNT 结果加上别名
+        FROM tienchin_clue
+        <where>
+            <if test="channelId!=null">
+                and channel_id=#{channelId}
+            </if>
+            <if test="status!=null">
+                and status=#{status}
+            </if>
+        </where>
+        GROUP BY DATE(create_time)) t3 on t2.date_str=t3.date_str where t2.date_str &lt;=
+        date_add(date_format(#{params.endTime},'%Y-%m-%d'),interval -1 day)
+    </select>
+    <select id="totalClue" resultType="org.javaboy.tienchin.common.core.domain.model.EchartsPoint">
+        set @cnum:=0;
+        select t4.x,(@cnum:=@cnum+t4.y) as y from(
+        SELECT t2.date_str as x, if(t3.c is null,0,t3.c) as y
+        FROM (
+        SELECT @sdate := date_add(date_format(#{params.beginTime},'%Y-%m-%d'), interval 1 day) AS date_str
+        UNION ALL
+        SELECT @sdate := date_add(@sdate, interval 1 day)
+        FROM mysql.time_zone
+        LIMIT 999
+        ) t2
+        LEFT JOIN (
+        SELECT DATE(create_time) AS date_str, COUNT(1) AS c  -- 给 COUNT 结果加上别名
+        FROM tienchin_clue
+        <where>
+            <if test="channelId!=null">
+                and channel_id=#{channelId}
+            </if>
+            <if test="status!=null">
+                and status=#{status}
+            </if>
+        </where>
+        GROUP BY DATE(create_time)) t3 on t2.date_str=t3.date_str where t2.date_str &lt;=
+        date_add(date_format(#{params.endTime},'%Y-%m-%d'),interval -1 day)) t4;
+    </select>
 </mapper>

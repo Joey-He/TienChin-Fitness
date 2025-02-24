@@ -83,12 +83,12 @@ public class Contract implements Serializable {
     /**
      * 合同价格
      */
-    private Object contractPrice;
+    private Double contractPrice;
 
     /**
      * 课程价格
      */
-    private Object coursePrice;
+    private Double coursePrice;
 
     /**
      * 折扣类型
@@ -109,7 +109,7 @@ public class Contract implements Serializable {
 
     private LocalDateTime createTime;
 
-    private LocalDateTime updateBy;
+    private String updateBy;
 
     private LocalDateTime updateTime;
 
@@ -253,19 +253,19 @@ public class Contract implements Serializable {
         this.filePath = filePath;
     }
 
-    public Object getContractPrice() {
+    public Double getContractPrice() {
         return contractPrice;
     }
 
-    public void setContractPrice(Object contractPrice) {
+    public void setContractPrice(Double contractPrice) {
         this.contractPrice = contractPrice;
     }
 
-    public Object getCoursePrice() {
+    public Double getCoursePrice() {
         return coursePrice;
     }
 
-    public void setCoursePrice(Object coursePrice) {
+    public void setCoursePrice(Double coursePrice) {
         this.coursePrice = coursePrice;
     }
 
@@ -309,11 +309,11 @@ public class Contract implements Serializable {
         this.createTime = createTime;
     }
 
-    public LocalDateTime getUpdateBy() {
+    public String getUpdateBy() {
         return updateBy;
     }
 
-    public void setUpdateBy(LocalDateTime updateBy) {
+    public void setUpdateBy(String updateBy) {
         this.updateBy = updateBy;
     }
 

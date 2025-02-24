@@ -255,6 +255,7 @@
                 <version>${tienchin.version}</version>
             </dependency>
 
+
         </dependencies>
     </dependencyManagement>
 

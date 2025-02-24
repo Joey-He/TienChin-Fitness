@@ -46,7 +46,7 @@
       </el-form-item>
     </el-form>
     <div>
-      <v-chart class="chart" :option="option"/>
+      <v-chart class="chart" :option="option" autoresize/>
     </div>
     <div>
       <el-table :data="clueData" style="width: 100%" border stripe>

@@ -18,7 +18,7 @@
       </el-form-item>
     </el-form>
     <div>
-      <v-chart class="business_chart" :option="option"/>
+      <v-chart class="business_chart" :option="option" autoresize/>
     </div>
     <div>
       <el-table :data="businessData" style="width: 100%" border stripe>
