@@ -6,6 +6,7 @@ import java.util.concurrent.TimeUnit;
 
 import org.javaboy.tienchin.common.utils.Threads;
 import org.javaboy.tienchin.common.utils.spring.SpringUtils;
+import org.springframework.stereotype.Component;
 
 /**
  * 异步任务管理器

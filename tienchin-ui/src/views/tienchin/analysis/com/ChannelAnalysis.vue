@@ -17,8 +17,8 @@
         <el-button icon="Refresh" @click="resetQuery">重置</el-button>
       </el-form-item>
     </el-form>
-    <v-chart class="chart" :option="option"/>
-    <v-chart class="chart" :option="option2"/>
+    <v-chart class="chart" :option="option" autoresize/>
+    <v-chart class="chart" :option="option2" autoresize/>
     <el-table :data="channelData" style="width: 100%" border stripe>
       <el-table-column prop="name" label="渠道名称" width="180" />
       <el-table-column prop="count" label="线索数量" width="180" />

@@ -17,4 +17,36 @@
             and ta.type=#{type}
         </if>
     </select>
+    <select id="activityAnalysisData" resultType="org.javaboy.tienchin.common.core.domain.model.PieData">
+        SELECT
+            t1.`name` AS NAME,
+            t1.count,
+            t2.count2,
+            IF
+            ( t1.count = 0, 0, t2.count2 / t1.count ) AS available
+        FROM
+            (
+                SELECT
+                    ta.activity_id,
+                    ta.`name`,
+                    count( tcl.clue_id ) AS count
+                FROM
+                    tienchin_activity ta
+                        LEFT JOIN tienchin_clue tcl ON ta.activity_id = tcl.activity_id and tcl.create_time BETWEEN #{params.beginTime} and #{params.endTime}
+                GROUP BY
+                    ta.activity_id
+            ) t1
+                LEFT JOIN (
+                SELECT
+                    ta.activity_id,
+                    ta.`name`,
+                    count( tcl.clue_id ) AS count2
+                FROM
+                    tienchin_activity ta
+                        LEFT JOIN tienchin_clue tcl ON ta.activity_id = tcl.activity_id and tcl.create_time BETWEEN #{params.beginTime} and #{params.endTime}
+                        AND tcl.`status` != 4
+                GROUP BY
+                    ta.activity_id
+            ) t2 ON t1.activity_id = t2.activity_id
+    </select>
 </mapper>

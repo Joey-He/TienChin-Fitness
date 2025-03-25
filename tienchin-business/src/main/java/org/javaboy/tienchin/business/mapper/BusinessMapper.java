@@ -5,6 +5,7 @@ import org.javaboy.tienchin.business.domain.Business;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import org.javaboy.tienchin.business.domain.vo.BusinessSummary;
 import org.javaboy.tienchin.business.domain.vo.BusinessVO;
+import org.javaboy.tienchin.common.core.domain.model.EchartsPoint;
 
 import java.util.List;
 
@@ -20,4 +21,8 @@ import java.util.List;
 public interface BusinessMapper extends BaseMapper<Business> {
 
     List<BusinessSummary> selectBusinessList(BusinessVO businessVO);
+
+    List<EchartsPoint> increaseBusiness(BusinessVO businessVO);
+
+    List<EchartsPoint> totalBusiness(BusinessVO businessVO);
 }

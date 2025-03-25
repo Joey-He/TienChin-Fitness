@@ -8,6 +8,7 @@ import org.javaboy.tienchin.activity.mapper.ActivityMapper;
 import org.javaboy.tienchin.activity.service.IActivityService;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import org.javaboy.tienchin.common.core.domain.AjaxResult;
+import org.javaboy.tienchin.common.core.domain.model.PieData;
 import org.javaboy.tienchin.common.utils.SecurityUtils;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -99,6 +100,16 @@ public class ActivityServiceImpl extends ServiceImpl<ActivityMapper, Activity> i
         QueryWrapper<Activity> qw = new QueryWrapper<>();
         qw.lambda().eq(Activity::getChannelId,channelId).eq(Activity::getDelFlag,0);
         return AjaxResult.success(list(qw));
+    }
+
+    @Override
+    public AjaxResult activityAnalysisData(ActivityVO activityVO) {
+        if (activityVO.getParams().get("beginTime")==null||activityVO.getParams().get("endTime")==null) {
+            activityVO.getParams().put("beginTime", LocalDateTime.now().minusWeeks(1));
+            activityVO.getParams().put("endTime", LocalDateTime.now().plusWeeks(1));
+        }
+        List<PieData> list = activityMapper.activityAnalysisData(activityVO);
+        return AjaxResult.success(list);
     }
 
     /**
